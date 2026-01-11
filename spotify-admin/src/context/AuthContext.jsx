@@ -4,7 +4,7 @@ import axios from "axios";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const baseURL = "http://localhost:4000";
+  const baseURL = import.meta.env.VITE_API_URL || "http://localhost:4000";
 
   const [token, setToken] = useState(() => localStorage.getItem("admin_token") || "");
   const [user, setUser] = useState(() => {
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
       return config;
     });
     return instance;
-  }, [token]);
+  }, [token, baseURL]);
 
   const login = async (email, password) => {
     const { data } = await axios.post(`${baseURL}/api/auth/login`, { email, password });
