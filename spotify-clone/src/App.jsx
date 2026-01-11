@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Player from "./components/Player";
-import Display from "./components/display";
+import Display from "./components/Display";
 import Navbar from "./components/Navbar";
 import RightSideBar from "./components/RightSideBar.jsx";
 import Auth from "./pages/Auth.jsx";
