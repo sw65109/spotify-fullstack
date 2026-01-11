@@ -1,14 +1,35 @@
 import AlbumItem from "./AlbumItem";
 import SongItem from "./SongItem";
 import { usePlayer } from "../context/usePlayer";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const DisplayHome = () => {
-  const { albums, songs, dataLoading, dataError } = usePlayer();
+  const { albums, songs, dataLoading, dataError, searchQuery } = usePlayer();
 
   const albumsRowRef = useRef(null);
   const songsRowRef = useRef(null);
+
+  const q = (searchQuery || "").trim().toLowerCase();
+
+  const filteredAlbums = useMemo(() => {
+    if (!q) return albums ?? [];
+    return (albums ?? []).filter((a) => {
+      const name = (a?.name || "").toLowerCase();
+      const desc = (a?.desc || "").toLowerCase();
+      return name.includes(q) || desc.includes(q);
+    });
+  }, [albums, q]);
+
+  const filteredSongs = useMemo(() => {
+    if (!q) return songs ?? [];
+    return (songs ?? []).filter((s) => {
+      const name = (s?.name || "").toLowerCase();
+      const desc = (s?.desc || "").toLowerCase();
+      const album = (s?.album || "").toLowerCase();
+      return name.includes(q) || desc.includes(q) || album.includes(q);
+    });
+  }, [songs, q]);
 
   const scrollRow = (ref, direction) => {
     const el = ref.current;
@@ -19,12 +40,10 @@ const DisplayHome = () => {
   if (dataLoading) return <div className="mt-6 text-white/70">Loading your music…</div>;
 
   if (dataError) {
-    return (
-      <div className="mt-6 text-red-300">
-        Couldn’t load songs/albums: {dataError}
-      </div>
-    );
+    return <div className="mt-6 text-red-300">Couldn’t load songs/albums: {dataError}</div>;
   }
+
+
 
   return (
     <>
@@ -38,6 +57,9 @@ const DisplayHome = () => {
 
         <h1 className="my-5 font-bold text-2xl">Albums</h1>
 
+        {q && filteredAlbums.length === 0 ? (
+        <div className="text-white/60">No albums match “{searchQuery}”.</div>
+      ) : (
         <div className="relative group">
           <button
             type="button"
@@ -63,7 +85,7 @@ const DisplayHome = () => {
             ref={albumsRowRef}
             className="flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth"
           >
-            {(albums ?? []).map((item) => (
+            {filteredAlbums.map((item) => (
               <AlbumItem
                 key={item.id}
                 name={item.name}
@@ -74,11 +96,15 @@ const DisplayHome = () => {
             ))}
           </div>
         </div>
+      )}
       </div>
 
       <div className="mb-4">
         <h1 className="my-5 font-bold text-2xl">Songs</h1>
 
+        {q && filteredSongs.length === 0 ? (
+        <div className="text-white/60">No songs match “{searchQuery}”.</div>
+      ) : (
         <div className="relative group">
           <button
             type="button"
@@ -104,7 +130,7 @@ const DisplayHome = () => {
             ref={songsRowRef}
             className="flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth"
           >
-            {(songs ?? []).map((item) => (
+            {filteredSongs.map((item) => (
               <SongItem
                 key={item.id}
                 name={item.name}
@@ -116,6 +142,7 @@ const DisplayHome = () => {
             ))}
           </div>
         </div>
+      )}
       </div>
     </>
   );

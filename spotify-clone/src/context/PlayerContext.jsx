@@ -13,6 +13,8 @@ export const PlayerProvider = ({ children }) => {
   const [dataLoading, setDataLoading] = useState(true);
   const [dataError, setDataError] = useState(null);
 
+  const [searchQuery,setSearchQuery] = useState("")
+
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -177,6 +179,9 @@ export const PlayerProvider = ({ children }) => {
       dataLoading,
       dataError,
 
+      searchQuery,
+      setSearchQuery,
+
       currentTrack,
       setCurrentTrack,
       isPlaying,
@@ -189,7 +194,7 @@ export const PlayerProvider = ({ children }) => {
       createMusicPlaylist,
       createPodcastPlaylist,
     }),
-    [API_URL, songs, albums, dataLoading, dataError, currentTrack, isPlaying, likedTrackIds, playlists]
+    [API_URL, songs, albums, dataLoading, dataError, searchQuery, currentTrack, isPlaying, likedTrackIds, playlists]
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
