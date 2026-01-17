@@ -10,13 +10,21 @@ npm run dev
 ```
 
 ## Environment
-By default the app uses `http://localhost:4000` for the API.
 
-Optional: create `.env` in this folder:
+For the deployed demo, environment variables are set in Vercel.
 
-```dotenv
-VITE_API_URL="http://localhost:4000"
+By default (local dev), the app uses http://localhost:4000 for the API.
+
+Optional (local dev only): copy the template and edit values:
+
+```bash
+copy .env.example .env
 ```
+
+Available keys:
+
+- `VITE_API_URL` (backend API base URL)
+- `VITE_ADMIN_URL` (optional: where the Admin Panel link should go)
 
 ---
 

@@ -10,16 +10,22 @@ npm run server
 ```
 
 ## Environment
-Create `.env` in this folder (example keys):
 
-```dotenv
-MONGODB_URI="<your mongo connection string>"
-JWT_SECRET="<strong secret>"
-ADMIN_REGISTER_CODE="<first-admin bootstrap code>"
-CLOUDINARY_NAME="..."
-CLOUDINARY_API_KEY="..."
-CLOUDINARY_SECRET_KEY="..."
+For the deployed demo, environment variables are set in Render.
+
+For local development only, copy the template and fill your values:
+
+```bash
+copy .env.example .env
 ```
+
+Required keys live in `.env`:
+
+- `MONGODB_URI`
+- `JWT_SECRET`
+- `ADMIN_REGISTER_CODE` (only needed to bootstrap the first admin)
+- `OWNER_ADMIN_ID` (prevents the owner admin from being deleted/demoted)
+- `CLOUDINARY_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_SECRET_KEY`
 
 ---
 
