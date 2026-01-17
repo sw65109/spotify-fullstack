@@ -21,7 +21,7 @@ const AdminList = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get("/api/auth/admin/list"); // defaults to role=admin
+      const { data } = await api.get("/api/auth/admin/list"); 
       if (!data?.success) throw new Error(data?.message || "Failed to load admins");
       setAdmins(data.users || []);
     } catch (err) {

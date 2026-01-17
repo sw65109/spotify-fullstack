@@ -330,4 +330,126 @@ export const deleteAdmin = async (req, res) => {
       .status(500)
       .json({ success: false, message: err?.message || "Server error" });
   }
+
+};
+export const listUsers = async (req, res) => {
+  try {
+    const q = String(req.query.q || "").trim().toLowerCase();
+    const role = String(req.query.role || "").toLowerCase();     
+    const status = String(req.query.status || "").toLowerCase(); 
+
+    const page = Math.max(1, parseInt(req.query.page || "1", 10));
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit || "20", 10)));
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (role === "admin" || role === "user") filter.role = role;
+    if (status === "active" || status === "disabled") filter.status = status;
+
+    if (q) {
+      filter.$or = [
+        { name: { $regex: q, $options: "i" } },
+        { email: { $regex: q, $options: "i" } },
+      ];
+    }
+
+    const [total, users] = await Promise.all([
+      userModel.countDocuments(filter),
+      userModel
+        .find(filter)
+        .select("_id name email role status createdAt disabledAt disabledBy")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+    ]);
+
+    return res.json({
+      success: true,
+      page,
+      limit,
+      total,
+      users: users.map((u) => ({
+        id: u._id,
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        status: u.status,
+        createdAt: u.createdAt,
+        disabledAt: u.disabledAt,
+        disabledBy: u.disabledBy,
+      })),
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err?.message || "Server error" });
+  }
+};
+
+export const disableUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ success: false, message: "userId required" });
+
+    if (String(req.user._id) === String(userId)) {
+      return res.status(403).json({ success: false, message: "You cannot disable your own account" });
+    }
+
+    if (OWNER_ADMIN_ID && String(userId) === String(OWNER_ADMIN_ID)) {
+      return res.status(403).json({ success: false, message: "Owner admin cannot be disabled" });
+    }
+
+    const target = await userModel.findById(userId);
+    if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+    target.status = "disabled";
+    target.disabledAt = new Date();
+    target.disabledBy = req.user._id;
+    await target.save();
+
+    return res.json({ success: true, user: { id: target._id, status: target.status } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err?.message || "Server error" });
+  }
+};
+
+export const enableUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ success: false, message: "userId required" });
+
+    const target = await userModel.findById(userId);
+    if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+    target.status = "active";
+    target.disabledAt = null;
+    target.disabledBy = null;
+    await target.save();
+
+    return res.json({ success: true, user: { id: target._id, status: target.status } });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err?.message || "Server error" });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ success: false, message: "userId required" });
+
+    if (String(req.user._id) === String(userId)) {
+      return res.status(403).json({ success: false, message: "You cannot delete your own account" });
+    }
+
+    if (OWNER_ADMIN_ID && String(userId) === String(OWNER_ADMIN_ID)) {
+      return res.status(403).json({ success: false, message: "Owner admin cannot be removed" });
+    }
+
+    const target = await userModel.findById(userId);
+    if (!target) return res.status(404).json({ success: false, message: "User not found" });
+
+
+    await userModel.deleteOne({ _id: userId });
+    return res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err?.message || "Server error" });
+  }
 };

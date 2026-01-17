@@ -7,7 +7,11 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
 
-    likedSongIds: [{ type: String }], // store song _id as string
+    status: { type: String, enum: ["active", "disabled"], default: "active" },
+    disabledAt: { type: Date, default: null },
+    disabledBy: { type: mongoose.Schema.Types.ObjectId, ref: "user", default: null },
+
+    likedSongIds: [{ type: String }],
   },
   { timestamps: true }
 );

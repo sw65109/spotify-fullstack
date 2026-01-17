@@ -314,6 +314,18 @@ const Player = () => {
     });
   };
 
+  const safePointerCapture = (el, pointerId, action) => {
+    try {
+      if (action === "set") el?.setPointerCapture?.(pointerId);
+      if (action === "release") el?.releasePointerCapture?.(pointerId);
+    } catch (err) {
+      // Don’t crash the UI if capture fails on some browsers/edge cases
+      if (import.meta.env.DEV) {
+        console.debug(`[PointerCapture:${action}] failed`, err);
+      }
+    }
+  };
+
   const setVolumeFromClientX = (clientX) => {
     const el = volumeBarRef.current;
     if (!el) return;
@@ -329,12 +341,8 @@ const Player = () => {
 
   const onVolumePointerDown = (e) => {
     isDraggingVolumeRef.current = true;
-    try {
-      e.currentTarget.setPointerCapture?.(e.pointerId);
-    } catch {
-      /* ignore */
-    }
-
+  
+    safePointerCapture(e.currentTarget, e.pointerId, "set");
     setVolumeFromClientX(e.clientX);
   };
 
@@ -345,13 +353,9 @@ const Player = () => {
 
   const onVolumePointerUp = (e) => {
     if (!isDraggingVolumeRef.current) return;
-
+  
     isDraggingVolumeRef.current = false;
-    try {
-      e.currentTarget.releasePointerCapture?.(e.pointerId);
-    } catch {
-      /* ignore */
-    }
+    safePointerCapture(e.currentTarget, e.pointerId, "release");
   };
 
   return (

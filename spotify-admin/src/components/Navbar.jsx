@@ -5,6 +5,12 @@ const Navbar = () => {
   const { user, token, logout, isAdmin } = useAuth();
   const nav = useNavigate();
 
+  const APP_URL = import.meta.env.VITE_APP_URL || "http://localhost:5173";
+
+  const goToApp = () => {
+    window.location.assign(APP_URL);
+  };
+
   const onLogout = () => {
     logout();
     nav("/login");
@@ -20,6 +26,17 @@ const Navbar = () => {
             <span className="font-semibold">{user?.name || user?.email || "User"}</span>
             <span className="ml-2 text-gray-500">{isAdmin ? "(admin)" : ""}</span>
           </div>
+        )}
+
+        {token && (
+          <button
+            type="button"
+            onClick={goToApp}
+            className="text-sm bg-white text-black border border-black rounded-full px-4 py-2"
+            title="Back to main app"
+          >
+            Back to App
+          </button>
         )}
 
         {token && (

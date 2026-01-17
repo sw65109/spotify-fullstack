@@ -13,6 +13,12 @@ const Navbar = () => {
 
   const { searchQuery, setSearchQuery, songs, albums } = usePlayer();
 
+  const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || "http://localhost:5174";
+  const isAdmin = user?.role === "admin";
+  const goToAdmin = () => {
+    window.location.assign(ADMIN_URL);
+  };
+
   const [isStandalone, setIsStandalone] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
@@ -21,18 +27,18 @@ const Navbar = () => {
 
   const searchBoxRef = useRef(null);
 
-useEffect(() => {
-  const onPointerDown = (e) => {
-    const el = searchBoxRef.current;
-    if (!el) return;
-    if (el.contains(e.target)) return;
-    setShowSuggestions(false);        
-    setMobileSearchOpen(false);        
-  };
+  useEffect(() => {
+    const onPointerDown = (e) => {
+      const el = searchBoxRef.current;
+      if (!el) return;
+      if (el.contains(e.target)) return;
+      setShowSuggestions(false);
+      setMobileSearchOpen(false);
+    };
 
-  document.addEventListener("pointerdown", onPointerDown);
-  return () => document.removeEventListener("pointerdown", onPointerDown);
-}, []);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
 
   useEffect(() => {
     setDraftQuery(searchQuery || "");
@@ -105,7 +111,9 @@ useEffect(() => {
   };
 
   const shouldShowSuggestions =
-    showSuggestions && q.length > 0 && (suggestions.songs.length > 0 || suggestions.albums.length > 0);
+    showSuggestions &&
+    q.length > 0 &&
+    (suggestions.songs.length > 0 || suggestions.albums.length > 0);
 
   return (
     <div className="w-full relative">
@@ -121,10 +129,20 @@ useEffect(() => {
           </button>
 
           <div className="flex items-center gap-1 shrink-0">
-            <button type="button" onClick={() => navigate(-1)} className="rounded-full flex items-center justify-center cursor-pointer" title="Back">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="rounded-full flex items-center justify-center cursor-pointer"
+              title="Back"
+            >
               <FiChevronLeft className="text-white/80 text-2xl" />
             </button>
-            <button type="button" onClick={() => navigate(1)} className="rounded-full flex items-center justify-center cursor-pointer" title="Forward">
+            <button
+              type="button"
+              onClick={() => navigate(1)}
+              className="rounded-full flex items-center justify-center cursor-pointer"
+              title="Forward"
+            >
               <FiChevronRight className="text-white/80 text-2xl" />
             </button>
           </div>
@@ -224,22 +242,51 @@ useEffect(() => {
           </button>
 
           {!isStandalone && (
-            <button type="button" className="flex items-center gap-1 bg-black py-1 px-3 rounded-2xl text-[15px] text-white cursor-pointer" title="Install App">
+            <button
+              type="button"
+              className="flex items-center gap-1 bg-black py-1 px-3 rounded-2xl text-[15px] text-white cursor-pointer"
+              title="Install App"
+            >
               <FaArrowCircleDown />
               <span className="hidden sm:inline">Install App</span>
             </button>
           )}
 
           {!token ? (
-            <button type="button" onClick={() => navigate("/auth")} className="bg-[#1f1f1f] text-white rounded-full px-4 h-9 text-sm" title="Login">
+            <button
+              type="button"
+              onClick={() => navigate("/auth")}
+              className="bg-[#1f1f1f] text-white rounded-full px-4 h-9 text-sm"
+              title="Login"
+            >
               Log in
             </button>
           ) : (
             <>
-              <button type="button" onClick={() => logout()} className="bg-[#1f1f1f] text-white rounded-full px-4 h-9 text-sm" title="Logout">
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={goToAdmin}
+                  className="bg-[#1f1f1f] text-white rounded-full px-4 h-9 text-sm"
+                  title="Open Admin Panel"
+                >
+                  Admin Panel
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => logout()}
+                className="bg-[#1f1f1f] text-white rounded-full px-4 h-9 text-sm"
+                title="Logout"
+              >
                 Log out
               </button>
-              <div className="bg-purple-500 text-black w-8 h-8 rounded-full flex items-center justify-center" title={user?.email || user?.name || "Account"}>
+
+              <div
+                className="bg-purple-500 text-black w-8 h-8 rounded-full flex items-center justify-center"
+                title={user?.email || user?.name || "Account"}
+              >
                 {userInitial}
               </div>
             </>
@@ -247,7 +294,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Mobile search panel */}
       {mobileSearchOpen && (
         <div ref={searchBoxRef} className="md:hidden absolute left-0 right-0 top-full px-3 pb-3 z-50">
           <div className="bg-[#121212] rounded-2xl p-3 shadow-lg border border-white/5">

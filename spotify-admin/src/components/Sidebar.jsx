@@ -1,7 +1,7 @@
 import React from "react";
 import { assets } from "../assets/assets";
 import { NavLink } from "react-router-dom";
-import { FiUserPlus } from "react-icons/fi";
+import { FiUserPlus, FiUsers } from "react-icons/fi";
 
 const Sidebar = () => {
   return (
@@ -64,7 +64,14 @@ const Sidebar = () => {
         >
           <p className="hidden sm:block">Admins</p>
         </NavLink>
-        
+
+        <NavLink
+          to="/users"
+          className="flex items-center gap-2.5 text-gray-800 bg-white border border-black p-2 pr-[max(8vw, 10px)] drop-shadow-[-4px_4px_#00FF5B] text-sm font-medium"
+        >
+          <FiUsers className="w-5 h-5" />
+          <p className="hidden sm:block">Users</p>
+        </NavLink>
       </div>
     </div>
   );

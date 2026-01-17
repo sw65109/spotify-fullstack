@@ -14,6 +14,10 @@ export const auth = async (req, res, next) => {
 
     if (!user) return res.status(401).json({ success: false, message: "User not found" });
 
+    if (user.status === "disabled") {
+      return res.status(403).json({ success: false, message: "Account disabled" });
+    }
+
     req.user = user;
     next();
   } catch (err) {

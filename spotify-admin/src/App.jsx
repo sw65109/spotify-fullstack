@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar";
 import AdminRoute from "./components/AdminRoute";
 import AddAdmin from "./pages/AddAdmin";
 import AdminList from "./pages/AdminList";
+import UsersList from "./pages/UsersList";
 
 const AdminLayout = () => {
   return (
@@ -70,6 +71,14 @@ const AdminLayout = () => {
               element={
                 <AdminRoute>
                   <AdminList />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/users"
+              element={
+                <AdminRoute>
+                  <UsersList />
                 </AdminRoute>
               }
             />
