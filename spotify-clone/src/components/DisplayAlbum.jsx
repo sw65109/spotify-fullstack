@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { assets } from "../assets/frontend-assets/assets";
+import { assets } from "../assets/assets";
 import { usePlayer } from "../context/usePlayer";
 
 const DisplayAlbum = () => {

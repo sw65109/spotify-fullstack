@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { assets } from "../assets/frontend-assets/assets";
+import { assets } from "../assets/assets.js";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiSearch, FiX } from "react-icons/fi";
 import { GoHomeFill } from "react-icons/go";

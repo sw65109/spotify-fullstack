@@ -6,6 +6,11 @@ This workspace contains three apps:
 - **spotify-admin**: Admin dashboard (upload/manage songs & albums)
 - **spotify-clone**: User-facing Spotify-style UI (playback, likes, playlists)
 
+## Attribution
+
+- Tutorial followed: **How To Create Full Stack Spotify Clone App In React JS | Music Streaming Site in MERN Stack 2024** (GreatStack).
+- “Spotify” is a trademark of Spotify AB. This project is for educational purposes and is not affiliated with, endorsed by, or sponsored by Spotify.
+
 > Tip: All the big sections below are collapsible so the README stays compact.
 
 ---

@@ -5,6 +5,7 @@ import Display from "./components/Display";
 import Navbar from "./components/Navbar";
 import RightSideBar from "./components/RightSideBar.jsx";
 import Auth from "./pages/Auth.jsx";
+import Footer from "./components/Footer.jsx";
 
 const Shell = () => {
   return (
@@ -25,6 +26,7 @@ const Shell = () => {
         <RightSideBar />
       </div>
 
+      <Footer />
       <Player />
     </div>
   );
