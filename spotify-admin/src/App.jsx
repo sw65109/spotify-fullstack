@@ -15,6 +15,7 @@ import AdminRoute from "./components/AdminRoute";
 import AddAdmin from "./pages/AddAdmin";
 import AdminList from "./pages/AdminList";
 import UsersList from "./pages/UsersList";
+import Footer from "./components/Footer";
 
 const AdminLayout = () => {
   return (
@@ -85,6 +86,7 @@ const AdminLayout = () => {
             <Route path="*" element={<Navigate to="/add-song" replace />} />
           </Routes>
         </div>
+        <Footer />
       </div>
     </div>
   );
